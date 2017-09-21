@@ -1,12 +1,8 @@
 {
-  "name": "blear.MODULE_NAME",
+  "name": "blear.ui.draggable-list",
   "version": "1.0.0",
   "description": "描述",
-  "scripts": {
-    "live": "browser-sync start --config bs-config.js",
-    "test": "node ./node_modules/.bin/karma start karma.conf.js --single-run",
-    "prepublish": "npm test"
-  },
+  "scripts": {},
   "preferGlobal": false,
   "bin": {},
   "engines": {
@@ -25,25 +21,21 @@
     "url": "http://ydr.me"
   },
   "contributors": [],
-  "homepage": "https://github.com/blearjs/blear.MODULE_NAME",
+  "homepage": "https://github.com/blearjs/blear.ui.draggable-list",
   "repository": {
     "type": "git",
-    "url": "https://github.com/blearjs/blear.MODULE_NAME"
+    "url": "https://github.com/blearjs/blear.ui.draggable-list"
   },
   "bugs": {
-    "url": "https://github.com/blearjs/blear.MODULE_NAME/issues"
+    "url": "https://github.com/blearjs/blear.ui.draggable-list/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "blear.classes.draggable": "^1.0.8",
+    "blear.ui": "^1.0.8"
+  },
   "peerDependencies": {},
   "devDependencies": {
-    "coolie.js": "^2.1.7",
-    "jasmine-core": "^2.4.1",
-    "karma": "^1.3.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-coolie": "^2.0.1",
-    "karma-coverage": "^1.1.1",
-    "karma-coveralls": "^1.1.2",
-    "karma-jasmine": "^1.1.0"
+    "coolie.js": "^2.1.7"
   },
   "license": "MIT"
 }
