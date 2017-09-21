@@ -1,0 +1,62 @@
+$item-height: 34px;
+
+
+.blearui-draggableList {
+  display: block;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  * {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  &-list {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  &-item {
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    text-align: center;
+    font-size: 14px;
+    height: $item-height;
+    line-height: $item-height;
+    color: #000;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &-mask {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    background-image: -webkit-linear-gradient(top,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6)),-webkit-linear-gradient(bottom,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6));
+    background-image: linear-gradient(180deg,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6)),linear-gradient(0deg,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6));
+    background-position: top,bottom;
+    background-size: 100% 30%;
+    background-repeat: no-repeat;
+  }
+
+  &-active {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: $item-height;
+    top: 30%;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+}
+

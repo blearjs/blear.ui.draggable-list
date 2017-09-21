@@ -31,7 +31,14 @@
   },
   "dependencies": {
     "blear.classes.draggable": "^1.0.8",
-    "blear.ui": "^1.0.8"
+    "blear.classes.mvvm": "^1.0.10",
+    "blear.core.attribute": "^1.0.11",
+    "blear.core.layout": "^1.0.6",
+    "blear.core.selector": "^1.0.8",
+    "blear.ui": "^1.0.8",
+    "blear.utils.array": "^1.0.12",
+    "blear.utils.object": "^1.0.14",
+    "blear.utils.typeis": "^1.0.3"
   },
   "peerDependencies": {},
   "devDependencies": {
