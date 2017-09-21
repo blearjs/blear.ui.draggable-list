@@ -1,7 +1,7 @@
 {
   "name": "blear.ui.draggable-list",
   "version": "1.0.0",
-  "description": "描述",
+  "description": "可拖拽的列表",
   "scripts": {},
   "preferGlobal": false,
   "bin": {},
