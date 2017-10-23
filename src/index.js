@@ -113,8 +113,8 @@ proto[_initData] = function () {
         return item;
     });
 
+    the[_activeIndex] = options.active;
     the[_translateY] = 0;
-    the[_activeIndex] = 0;
     the[_data] = {list: list};
 };
 
@@ -134,6 +134,7 @@ proto[_calBoundary] = function () {
         }
     });
     the[_minTranslateY] = itemHeight + the[_maxTranslateY] - itemHeight * listLength;
+    the[_translateY] = the[_maxTranslateY] - itemHeight * the[_activeIndex];
 };
 
 /**
@@ -155,7 +156,7 @@ proto[_initNode] = function () {
     attribute.style(the[_contentEl], 'height', the[_sizeHeight]);
     attribute.style(the[_maskEl], 'background-size', '100% ' + the[_maxTranslateY] + 'px');
     attribute.style(the[_activeEl], 'top', the[_maxTranslateY] + 'px');
-    the[_setTranslateY](the[_translateY] = the[_maxTranslateY]);
+    the[_setTranslateY](the[_translateY]);
 };
 
 /**
@@ -177,7 +178,7 @@ proto[_initMVVM] = function () {
 proto[_initEvent] = function () {
     var the = this;
     var options = the[_options];
-    var startY = the[_translateY];
+    var startY;
 
     the[_draggable] = new Draggable({
         axis: 'y',
@@ -187,6 +188,7 @@ proto[_initEvent] = function () {
         shadow: false,
         draggable: false
     }).on('dragStart', function (meta) {
+        startY = the[_translateY];
         // console.log('dragStart', meta);
     }).on('dragMove', function (meta) {
         the[_setTranslateY](startY + meta.deltaY);

@@ -14,7 +14,8 @@ var dl = new DraggableList({
     list: [
         2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019,
         // 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029
-    ]
+    ],
+    active: 7
 }).on('change', function (item) {
     console.log('change', item);
 });
