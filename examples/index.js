@@ -28,3 +28,8 @@ document.getElementById('hide').onclick = function () {
     dl.setVisible(7, false);
     dl.setVisible(9, false);
 };
+
+// 激活 2016
+document.getElementById('active').onclick = function () {
+    dl.setActive(6);
+};

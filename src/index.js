@@ -14,7 +14,6 @@ var typeis = require('blear.utils.typeis');
 var MVVM = require('blear.classes.mvvm');
 var selector = require('blear.core.selector');
 var attribute = require('blear.core.attribute');
-var layout = require('blear.core.layout');
 
 var namespace = 'blearui-draggableList';
 var itemHeight = 34;
@@ -22,7 +21,8 @@ var defaults = {
     el: 'body',
     // {text: "", value: "", visible: true}
     list: [],
-    size: 7
+    size: 7,
+    active: 0
 };
 var DraggableList = UI.extend({
     constructor: function (options) {
@@ -51,9 +51,13 @@ var DraggableList = UI.extend({
         return the;
     },
 
-    // setActive: function (index) {
-    //
-    // },
+    setActive: function (index) {
+        var the = this;
+        the[_activeIndex] = index;
+        the[_calTranslateY]();
+        the[_setTranslateY](the[_translateY]);
+        return the;
+    },
 
     /**
      * 获取当前激活的项目
@@ -61,7 +65,7 @@ var DraggableList = UI.extend({
      */
     getActive: function () {
         var the = this;
-        return wrapItem(the[_data].list, the[_activeIndex]);
+        return object.assign({}, the[_data].list[the[_activeIndex]]);
     },
 
     destroy: function () {
@@ -90,6 +94,8 @@ var _maxTranslateY = sole();
 var _setTranslateY = sole();
 var _fixTranslateY = sole();
 var _activeIndex = sole();
+var _calTranslateY = sole();
+var _emitActive = sole();
 var proto = DraggableList.prototype;
 
 /**
@@ -110,6 +116,7 @@ proto[_initData] = function () {
             item.visible = true;
         }
 
+        item.index = index;
         return item;
     });
 
@@ -134,7 +141,7 @@ proto[_calBoundary] = function () {
         }
     });
     the[_minTranslateY] = itemHeight + the[_maxTranslateY] - itemHeight * listLength;
-    the[_translateY] = the[_maxTranslateY] - itemHeight * the[_activeIndex];
+    the[_calTranslateY]();
 };
 
 /**
@@ -197,7 +204,6 @@ proto[_initEvent] = function () {
         // console.log('dragEnd', meta);
         the[_translateY] += meta.deltaY;
         the[_fixTranslateY]();
-        startY = the[_translateY];
     });
 };
 
@@ -225,47 +231,70 @@ proto[_fixTranslateY] = function () {
     translateY = Math.max(translateY, the[_minTranslateY]);
     translateY = Math.min(translateY, the[_maxTranslateY]);
     var deltaY = the[_maxTranslateY] - translateY;
-    var activeIndex = Math.round(deltaY / itemHeight);
-    translateY = -activeIndex * itemHeight + the[_maxTranslateY];
+    var displayIndex = Math.round(deltaY / itemHeight);
+    translateY = -displayIndex * itemHeight + the[_maxTranslateY];
     the[_setTranslateY](the[_translateY] = translateY);
-
-    if (the[_activeIndex] === activeIndex) {
-        return;
-    }
-
-    the.emit('change', wrapItem(the[_data].list, the[_activeIndex] = activeIndex));
+    the[_emitActive](displayIndex);
 };
-
-require('./style.css', 'css|style');
-DraggableList.defaults = defaults;
-module.exports = DraggableList;
 
 
 /**
- * 包裹
- * @param list
- * @param index
- * @returns {{index: *, value: *, text: *, visible: boolean}}
+ * 计算偏移
  */
-function wrapItem(list, index) {
+proto[_calTranslateY] = function () {
+    var the = this;
+    var options = the[_options];
+    var list = the[_data].list;
+    var visibleIndex = -1;
+
+    array.each(list, function (index, item) {
+        if (item.visible) {
+            visibleIndex++;
+        }
+
+        if (the[_activeIndex] === index) {
+            return false;
+        }
+    });
+
+    the[_translateY] = the[_maxTranslateY] - itemHeight * visibleIndex;
+};
+
+
+/**
+ * 发送激活事件
+ * @param displayIndex
+ */
+proto[_emitActive] = function (displayIndex) {
+    var the = this;
+    var options = the[_options];
     var foundItem = null;
-    var foundIndex = -1;
+    var visibleIndex = -1;
+    var list = the[_data].list;
 
     array.each(list, function (_, item) {
         if (item.visible) {
-            foundIndex++;
+            visibleIndex++;
         }
 
-        if (foundIndex === index) {
+        if (visibleIndex === displayIndex) {
             foundItem = item;
             return false;
         }
     });
 
-    return {
-        index: index,
-        value: foundItem.value,
-        text: foundItem.text,
-        visible: foundItem.visible
-    };
-}
+    var activeIndex = foundItem.index;
+
+    if (the[_activeIndex] === activeIndex) {
+        return;
+    }
+
+    the[_activeIndex] = activeIndex;
+    the.emit('change', object.assign({}, foundItem));
+};
+
+
+require('./style.css', 'css|style');
+DraggableList.defaults = defaults;
+module.exports = DraggableList;
+
