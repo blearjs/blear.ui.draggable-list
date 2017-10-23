@@ -51,6 +51,11 @@ var DraggableList = UI.extend({
         return the;
     },
 
+    /**
+     * 设置激活
+     * @param index
+     * @returns {DraggableList}
+     */
     setActive: function (index) {
         var the = this;
         the[_activeIndex] = index;
@@ -68,6 +73,9 @@ var DraggableList = UI.extend({
         return object.assign({}, the[_data].list[the[_activeIndex]]);
     },
 
+    /**
+     * 销毁实例
+     */
     destroy: function () {
         DraggableList.invoke('destroy', this);
     }
