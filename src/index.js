@@ -14,6 +14,7 @@ var typeis = require('blear.utils.typeis');
 var MVVM = require('blear.classes.mvvm');
 var selector = require('blear.core.selector');
 var attribute = require('blear.core.attribute');
+var transform = require('blear.core.transform');
 
 var namespace = 'blearui-draggableList';
 var itemHeight = 34;
@@ -202,7 +203,7 @@ proto[_initEvent] = function () {
 
     the[_draggable] = new Draggable({
         axis: 'y',
-        containerEl: document.body,
+        containerEl: the[_containerEl],
         effectedSelector: the[_containerEl],
         handleSelector: the[_containerEl],
         shadow: false,
@@ -246,7 +247,16 @@ proto[_fixTranslateY] = function () {
     var deltaY = the[_maxTranslateY] - translateY;
     var displayIndex = Math.round(deltaY / itemHeight);
     translateY = -displayIndex * itemHeight + the[_maxTranslateY];
-    the[_setTranslateY](the[_translateY] = translateY);
+    var distance = Math.abs(the[_translateY] - translateY);
+    // the[_setTranslateY](the[_translateY] = translateY);
+    transform.transit(the[_listEl], {
+        transform: {
+            translateY: the[_translateY] = translateY
+        }
+    }, {
+        easing: 'out',
+        duration: Math.min(distance, 300)
+    });
     the[_emitActiveByDisplayIndex](displayIndex);
 };
 
