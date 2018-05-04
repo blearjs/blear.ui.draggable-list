@@ -61,6 +61,7 @@ var DraggableList = UI.extend({
         the[_activeIndex] = index;
         the[_calTranslateY]();
         the[_setTranslateY](the[_translateY]);
+        the[_emitActiveByActiveIndex](index);
         return the;
     },
 
@@ -71,6 +72,22 @@ var DraggableList = UI.extend({
     getActive: function () {
         var the = this;
         return object.assign({}, the[_data].list[the[_activeIndex]]);
+    },
+
+    /**
+     * 手动设置 list
+     * @param list
+     * @param [active=0]
+     * @returns {DraggableList}
+     */
+    setList: function (list, active) {
+        var the = this;
+        the[_activeIndex] = active || 0;
+        the[_data].list = mapList(list);
+        the[_calBoundary]();
+        the[_setTranslateY](the[_translateY]);
+        the[_emitActiveByActiveIndex](the[_activeIndex]);
+        return the;
     },
 
     /**
@@ -103,7 +120,8 @@ var _setTranslateY = sole();
 var _fixTranslateY = sole();
 var _activeIndex = sole();
 var _calTranslateY = sole();
-var _emitActive = sole();
+var _emitActiveByDisplayIndex = sole();
+var _emitActiveByActiveIndex = sole();
 var proto = DraggableList.prototype;
 
 /**
@@ -112,25 +130,12 @@ var proto = DraggableList.prototype;
 proto[_initData] = function () {
     var the = this;
     var options = the[_options];
-    var list = array.map(options.list, function (item, index) {
-        if (!typeis.Object(item)) {
-            item = {
-                value: item,
-                text: item
-            };
-        }
-
-        if (!typeis.Boolean(item.visible)) {
-            item.visible = true;
-        }
-
-        item.index = index;
-        return item;
-    });
 
     the[_activeIndex] = options.active;
     the[_translateY] = 0;
-    the[_data] = {list: list};
+    the[_data] = {
+        list: mapList(options.list)
+    };
 };
 
 /**
@@ -242,9 +247,8 @@ proto[_fixTranslateY] = function () {
     var displayIndex = Math.round(deltaY / itemHeight);
     translateY = -displayIndex * itemHeight + the[_maxTranslateY];
     the[_setTranslateY](the[_translateY] = translateY);
-    the[_emitActive](displayIndex);
+    the[_emitActiveByDisplayIndex](displayIndex);
 };
-
 
 /**
  * 计算偏移
@@ -268,12 +272,11 @@ proto[_calTranslateY] = function () {
     the[_translateY] = the[_maxTranslateY] - itemHeight * visibleIndex;
 };
 
-
 /**
  * 发送激活事件
  * @param displayIndex
  */
-proto[_emitActive] = function (displayIndex) {
+proto[_emitActiveByDisplayIndex] = function (displayIndex) {
     var the = this;
     var options = the[_options];
     var foundItem = null;
@@ -297,12 +300,44 @@ proto[_emitActive] = function (displayIndex) {
         return;
     }
 
-    the[_activeIndex] = activeIndex;
-    the.emit('change', object.assign({}, foundItem));
+    the[_emitActiveByActiveIndex](activeIndex);
 };
 
+/**
+ * 发送激活事件
+ */
+proto[_emitActiveByActiveIndex] = function (activeIndex) {
+    var the = this;
+
+    the[_activeIndex] = activeIndex;
+    the.emit('change', object.assign({}, the[_data].list[activeIndex]));
+};
 
 require('./style.css', 'css|style');
 DraggableList.defaults = defaults;
 module.exports = DraggableList;
 
+// ================================================
+
+/**
+ * 包装 list
+ * @param list
+ * @returns {Array}
+ */
+function mapList(list) {
+    return array.map(list, function (item, index) {
+        if (!typeis.Object(item)) {
+            item = {
+                value: item,
+                text: item
+            };
+        }
+
+        if (!typeis.Boolean(item.visible)) {
+            item.visible = true;
+        }
+
+        item.index = index;
+        return item;
+    });
+}

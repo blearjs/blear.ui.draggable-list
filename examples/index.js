@@ -30,6 +30,31 @@ document.getElementById('hide').onclick = function () {
 };
 
 // 激活 2016
-document.getElementById('active').onclick = function () {
+document.getElementById('active0').onclick = function () {
+    dl.setActive(0);
+};
+
+// 激活 2016
+document.getElementById('active6').onclick = function () {
     dl.setActive(6);
 };
+
+// setList
+document.getElementById('setList').onclick = function () {
+    var i = 0;
+    var j = random(5, 20);
+    var k = random(0, j - 1);
+    var list = [];
+
+    for(; i < j; i++) {
+        list.push(Math.random());
+    }
+
+    dl.setList(list, k);
+};
+
+
+// ========================
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
