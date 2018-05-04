@@ -2,6 +2,7 @@
  * blear.ui.draggable-list
  * @author ydr.me
  * @create 2016年06月04日14:09:36
+ * @update 2018年05月04日11:03:23
  */
 
 'use strict';
